@@ -1,0 +1,275 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Documentação de Usuários",
+    "version": "1.0.0",
+    "contact": {
+      "email": "andre.amorim@gmail.com"
+    }
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Cria um novo usuário",
+        "description": "Cria um novo usuário",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "Andre Amorim",
+                  "email": "andre.amorim@gmail.com"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email is already in use",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "error": "Email is already in use"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Users"],
+        "summary": "Lista todos os usuários",
+        "description": "Lista todos os usuários (Somente para admins)",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/User"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not admin or user not exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "error": "User not admin"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Busca um usuário específico",
+        "description": "Busca um usuário específico",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "User Id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "error": "User not exist"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/admin": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Altera o status de administrador do usuário.",
+        "description": "Altera o status de administrador do usuário.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "user uuid",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "admin": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "15bf4dd2-eec0-4cf3-9a52-25db7c95db10"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Andre Amorim"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "andre.amorim@gmail.com"
+                    },
+                    "created_at": {
+                      "type": "dateString",
+                      "example": "2021-03-22T18:40:00.00Z"
+                    },
+                    "updated_at": {
+                      "type": "dateString",
+                      "example": "2021-03-22T18:40:00.00Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not exist, please send id valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "error": "User not exist, please send id valid"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "admin": {
+          "type": "boolean",
+          "example": false
+        },
+        "id": {
+          "type": "string",
+          "example": "4b1fe0b5-e8f8-4024-94c1-a1671387db98"
+        },
+        "name": {
+          "type": "string",
+          "example": "André Amorim"
+        },
+        "email": {
+          "type": "string",
+          "example": "andre.amorim@gmail.com"
+        },
+        "created_at": {
+          "type": "dateString",
+          "example": "2021-03-22T18:28:00.00Z"
+        },
+        "updated_at": {
+          "type": "dateString",
+          "example": "2021-03-22T18:28:00.00Z"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    }
+  }
+}
